@@ -1,11 +1,8 @@
-bool cmp(vector<int> &a, vector<int> &b) {
-        return a[0] < b[0];
-    }
 class Solution {
 public:
     
     int countDays(int days, vector<vector<int>>& meetings) {
-        sort(meetings.begin(), meetings.end(), cmp);
+        sort(meetings.begin(), meetings.end());
         
         int i = 0;
         int res = 0;
