@@ -1,5 +1,6 @@
 class Solution {
 public:
+    // https://leetcode.com/problems/integer-break/discuss/2469325/C%2B%2B-oror-Recursion-greaterMemoization-greaterTabulation-greaterSpaceOptimization
     int integerBreak(int n) {
         vector<vector<int>> dp(n, vector<int>(n+1, -1));
         for(int j = 0;j < n+1; j++) dp[1][j] = 1;
