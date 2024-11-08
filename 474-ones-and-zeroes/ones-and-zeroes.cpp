@@ -2,8 +2,18 @@ class Solution {
 public:
     int findMaxForm(vector<string>& strs, int m, int n) {
         
-        vector<vector<vector<int>>> dp(strs.size(), vector<vector<int>>(m+1, vector<int>(n+1,-1)));
-        return findMaxFormHelper(strs, m, n, 0, dp);
+        vector<vector<int>> dp (m+1, vector<int>(n+1, 0));
+        
+        for (string s : strs) {
+            vector<int> count = countZeroesOnes(s);
+            for (int zeroes = m; zeroes >= count[0]; zeroes--) {
+                for (int ones = n; ones >= count[1]; ones--) {
+                    dp[zeroes][ones] = max(1 + dp[zeroes-count[0]][ones-count[1]], dp[zeroes][ones]);
+                }
+            }
+        }
+        
+        return dp[m][n];
     }
     
     int findMaxFormHelper(vector<string>& strs, int zeroes, int ones, int i, 
