@@ -6,7 +6,7 @@ public:
         
         for (auto trip : trips) n = max(trip[2], n);
         
-        vector<int> line(n + 2, 0);
+        vector<int> line(n + 1, 0);
         
         for (auto trip : trips) {
             line[trip[1]] += trip[0];
