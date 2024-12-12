@@ -8,11 +8,10 @@ public:
         }
         
         int res = 0;
-        int count = 0;
         
         for (int i = 1; i <= 101; i++) {
-            count += cars[i];
-            if (count > 0) {
+            cars[i] += cars[i-1];
+            if (cars[i] > 0) {
                 res ++;
             }
             
