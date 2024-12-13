@@ -1,5 +1,6 @@
 class Solution {
 public:
+//     https://www.youtube.com/watch?v=KB-ReEdu7_Y
     vector<string> splitMessage(string message, int limit) {
         for (int digit = 1; digit < 5; digit++) {
             vector<string> res = helper(message, limit, digit);
