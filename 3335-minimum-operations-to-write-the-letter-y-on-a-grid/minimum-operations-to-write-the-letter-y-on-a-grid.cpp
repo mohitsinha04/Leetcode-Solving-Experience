@@ -1,5 +1,6 @@
 class Solution {
 public:
+//     https://www.youtube.com/watch?v=gm55Fi3oEsc
     int minimumOperationsToWriteY(vector<vector<int>>& grid) {
         return min ({trythis(grid, 0, 1), trythis(grid, 0, 2),
                     trythis(grid, 1, 0), trythis(grid, 1, 2), 
