@@ -1,32 +1,36 @@
 class Solution {
 public:
     vector<int> loudAndRich(vector<vector<int>>& richer, vector<int>& quiet) {
-        unordered_map<int, vector<int>> graph;
-        
-        for (int i = 0; i < quiet.size(); i++) graph[i] = {};
-        
-        for (auto rich : richer) {
-            graph[rich[1]].push_back(rich[0]);
+        const int N = quiet.size();
+        vector<vector<int>> graph(N);
+        vector<int> indegrees(N, 0);
+        for (auto& r : richer) {
+            ++indegrees[r[1]];
+            graph[r[0]].push_back(r[1]);
         }
         
-        vector<int> res(quiet.size(), -1);
-        
-        for (int i = 0; i < res.size(); i++) {
-            dfs(graph, quiet, res, i);
-        }
-        return res;
-    }
-    
-    int dfs(unordered_map<int, vector<int>>& graph, vector<int>& quiet, vector<int>& res, int source) {
-        if (res[source] == -1) {
-            res[source] = source;
-            for (int child : graph[source]) {
-                int candidate = dfs(graph, quiet, res, child);
-                if (quiet[candidate] < quiet[res[source]]) 
-                    res[source] = candidate;
+        deque<int> q;
+        for (int i = 0; i < indegrees.size(); ++i) {
+            if (indegrees[i] == 0) {
+                q.push_back(i);
             }
         }
-        return res[source];
+        
+        vector<int> answers(N);
+        iota(answers.begin(), answers.end(), 0);
+        while (!q.empty()) {
+            auto idx = q.front();
+            q.pop_front();
+            for (auto next : graph[idx]) {
+                if (quiet[answers[next]] > quiet[answers[idx]]) {
+                    answers[next] = answers[idx];
+                }
+                if (--indegrees[next] == 0) {
+                    q.push_back(next);
+                }
+            }
+        }
+        return answers;
     }
 };
 
