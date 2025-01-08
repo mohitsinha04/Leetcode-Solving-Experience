@@ -8,7 +8,7 @@ public:
             for (int j = i + 1; j <= farthest; j++) {
                 if (dp[j] ==1) {
                     dp[i] = 1;
-                    // break;
+                    break;
                 }
             }
         }
