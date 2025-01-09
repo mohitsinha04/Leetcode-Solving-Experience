@@ -1,20 +1,16 @@
 class Solution {
 public:
     int numberOfPoints(vector<vector<int>>& nums) {
-        vector<int> cars(102, 0);
+        vector<int> nums_map(102, 0);
+
         for (auto i : nums) {
-            cars[i[0]]++;
-            cars[i[1] + 1]--;
+            nums_map[i[0]]++;
+            nums_map[i[1]+1]--;
         }
-        
-        int res = 0;
-        
-        for (int i = 1; i <= 101; i++) {
-            cars[i] += cars[i-1];
-            if (cars[i] > 0) {
-                res ++;
-            }
-            
+        int total_car = 0, res = 0;
+        for (int i = 1; i < 101; i++) {
+            total_car += nums_map[i];
+            if (total_car > 0) res++;
         }
         return res;
     }
