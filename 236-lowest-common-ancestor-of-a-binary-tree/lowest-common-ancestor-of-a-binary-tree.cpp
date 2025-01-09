@@ -8,22 +8,37 @@
  * };
  */
 class Solution {
-private:
-    TreeNode* res = nullptr;
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        lca(root, p, q);
-        return res;
-    }
-    bool lca(TreeNode* root, TreeNode* p, TreeNode* q) {
-        if (root == nullptr) return false;
-        int left = lca(root->left, p, q);
-        int right = lca(root-> right, p, q);
+        stack<TreeNode*> stack;
+        stack.push(root);
 
-        int mid = (root == p) || (root == q);
+        unordered_map<TreeNode*, TreeNode*> parents;
 
-        if (left + right + mid >= 2) res = root;
+        parents[root] = nullptr;
 
-        return (left + right + mid) > 0;
+        while (!parents.count(p) || !parents.count(q)) {
+            TreeNode* curr = stack.top();
+            stack.pop();
+
+            if (curr->left) {
+                parents[curr->left] = curr;
+                stack.push(curr->left);
+            }
+            if (curr->right) {
+                parents[curr->right] = curr;
+                stack.push(curr->right);
+            }
+        }
+        unordered_set<TreeNode*> set;
+
+        while(p != nullptr) {
+            set.insert(p);
+            p = parents[p];
+        }
+        while (!set.count(q)) {
+            q = parents[q];
+        }
+        return q;
     }
 };
