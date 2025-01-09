@@ -12,15 +12,18 @@ public:
 class Solution {
 public:
     Node* lowestCommonAncestor(Node* p, Node * q) {
-        unordered_set<Node*> ancestor;
+        Node* a = p;
+        Node* b = q;
 
-        while (p != nullptr) {
-            ancestor.insert(p);
-            p = p->parent;
+        // Traverse until both pointers meet
+        while (a != b) {
+            // If a reaches the root (nullptr), start from q
+            a = (a == nullptr) ? q : a->parent;
+            // If b reaches the root (nullptr), start from p
+            b = (b == nullptr) ? p : b->parent;
         }
-        while (!ancestor.count(q)) {
-            q = q->parent;
-        }
-        return q;
+        
+        // Return the meeting point, which is the LCA
+        return a;
     }
 };
