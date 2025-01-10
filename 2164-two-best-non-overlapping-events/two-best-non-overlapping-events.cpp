@@ -1,27 +1,24 @@
 class Solution {
 public:
     int maxTwoEvents(vector<vector<int>>& events) {
+        priority_queue<pair<int, int>, vector<pair<int, int>>,
+                       greater<pair<int, int>>>
+            pq;
         sort(events.begin(), events.end());
-        vector<vector<int>> dp(events.size(), vector<int>(3, -1));
-        return helper(events, 0, 0, dp);
-    }
-    int helper(vector<vector<int>>& events, int idx, int count, vector<vector<int>>& dp) {
-        if (count == 2 || idx >= events.size()) return 0;
 
-        if (dp[idx][count] != -1) return dp[idx][count];
+        int maxVal = 0, maxSum = 0;
 
-        int end = events[idx][1];
-        int left = idx + 1, right = events.size() - 1;
+        for (auto& event : events) {
+            // Pop all valid events from queue and take their maximum.
+            while (pq.size() && pq.top().first < event[0]) {
+                maxVal = max(maxVal, pq.top().second);
+                pq.pop();
+            }
 
-        while (left < right) {
-            int mid = left + (right - left)/2;
-            if (events[mid][0] > end) right = mid;
-            else left = mid + 1;
+            maxSum = max(maxSum, maxVal + event[2]);
+            pq.push({event[1], event[2]});
         }
-        int include = events[idx][2] + (left < events.size() && events[left][0] > end ?
-                                        helper(events, left, count + 1, dp) : 0);
-        int exclude = helper(events, idx + 1, count, dp);
 
-        return dp[idx][count] = max(include, exclude);
+        return maxSum;
     }
 };
