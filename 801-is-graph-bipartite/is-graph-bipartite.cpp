@@ -13,6 +13,7 @@ public:
             
             while (!q.empty()) {
                 int temp = q.front();
+                q.pop();
                 
                 for (auto neighbor : graph[temp]) {
                     
@@ -26,7 +27,7 @@ public:
                     else if (colors[neighbor] == colors[temp]) 
                         return false;
                 }
-                q.pop();
+                
             }
         }
         return true;
