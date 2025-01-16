@@ -9,34 +9,30 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-
-//  1, 2, 3, 4, 5
-//  k = 2, 
-// 
 class Solution {
 public:
     vector<int> closestKValues(TreeNode* root, double target, int k) {
-        vector<int> nums;
-        dfs(root, nums);
-        int left = 0;
-        int right = nums.size() - k;
-
-        while (left < right) {
-            int mid = left + (right - left)/2;
-            if (abs(nums[mid + k] - target) < abs(nums[mid] - target)) left = mid + 1;
-            else right = mid;
-        }
+        deque<int> q;
+        dfs(root, target, k, q);
         vector<int> res;
-        for (int i = left; i < left + k; i++) {
-            res.push_back(nums[i]);
+        while (q.size() > 0) {
+            res.push_back(q.front());
+            q.pop_front();
         }
         return res;
     }
-
-    void dfs(TreeNode* root, vector<int>& sortedArray) {
+    void dfs(TreeNode* root, double target, int k, deque<int>& q) {
         if (!root) return;
-        dfs(root->left, sortedArray);
-        sortedArray.push_back(root->val);
-        dfs(root->right, sortedArray);
+
+        dfs(root->left, target, k, q);
+        q.push_front(root->val);
+        if (q.size() > k) {
+            if (abs(target - q.front()) <= abs(target - q.back())) {
+                q.pop_back();
+            } else {
+                q.pop_front();
+            }
+        }
+        dfs(root->right, target, k, q);
     }
 };
