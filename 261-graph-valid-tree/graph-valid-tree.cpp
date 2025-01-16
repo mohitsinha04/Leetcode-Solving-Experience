@@ -10,7 +10,6 @@ public:
             inDegree[edge[1]]++;
         }
         queue<int> q;
-        unordered_set<int> vis;
         for (int i = 0; i < n; i++) {
             if (inDegree[i] == 1) {
                 q.push(i);
@@ -22,8 +21,6 @@ public:
             for (int i = 0; i < size; i++) {
                 int curr = q.front();
                 q.pop();
-                vis.insert(curr);
-                // inDegree[curr]--;
                 for (int adj : graph[curr]) {
                     if (--inDegree[adj] == 1) {
                         q.push(adj);
