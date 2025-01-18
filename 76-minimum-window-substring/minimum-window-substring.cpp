@@ -28,7 +28,8 @@ public:
                     minLength = winend - winstart + 1;
                     minLeft = winstart;
                 }
-                map[s[winstart++]]++;
+                map[s[winstart]]++;
+                winstart++;
                 count--;
             }
         }
