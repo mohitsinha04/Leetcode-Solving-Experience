@@ -12,21 +12,14 @@
 class Solution {
 public:
     TreeNode* upsideDownBinaryTree(TreeNode* root) {
-        TreeNode* curr = root;
-        TreeNode* next = nullptr;
-        TreeNode* temp = nullptr;
-        TreeNode* prev = nullptr;
-
-        while (curr) {
-            next = curr->left;
-
-            curr->left = temp;
-            temp = curr->right;
-            curr->right = prev;
-
-            prev = curr;
-            curr = next;
-        }
-        return prev;
+        if (!root || !root->left) return root;
+        TreeNode* cur_left = root->left;
+        TreeNode* cur_right = root->right;
+        TreeNode* new_root = upsideDownBinaryTree(root->left);
+        cur_left->right = root;
+        cur_left->left = cur_right;
+        root->left = nullptr;
+        root->right = nullptr;
+        return new_root;
     }
 };
