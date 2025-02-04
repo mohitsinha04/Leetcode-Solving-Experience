@@ -17,7 +17,7 @@ public:
             int currdist = curr[0];
             int node = curr[1];
             int steps = curr[2];
-
+            // we are using pq, thats why minimum steps would give us ans
             if (steps > stops[node] || steps > k + 1) continue;
             stops[node] = steps;
             if (node == dst) return currdist;
