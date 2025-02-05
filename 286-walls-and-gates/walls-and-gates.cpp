@@ -1,35 +1,26 @@
 class Solution {
 public:
-    // q[0] = i;
-    // q[1] = j;
-    // q[2] = curr_level;
-    
     void wallsAndGates(vector<vector<int>>& rooms) {
-        
-        vector<vector<int>> dir{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-        
-        queue<vector<int>> q;
-        
-        for (int i = 0; i < rooms.size(); i++) {
-            for (int j = 0; j < rooms[0].size(); j++) {
-                if (rooms[i][j] == 0) q.push({i, j});
+        const int row = rooms.size();
+        if (0 == row) return;
+        const int col = rooms[0].size();
+        queue<pair<int, int>> canReach;  // save all element reachable
+        vector<pair<int, int>> dirs = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}}; // four directions for each reachable
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < col; j++){
+                if(0 == rooms[i][j])
+                    canReach.emplace(i, j);
             }
         }
-        
-        int level = 0;
-        
-        while (!q.empty()) {
-            vector<int> curr = q.front();
-            q.pop();
-                
-            for (auto d : dir) {
-                int x = curr[0] + d[0];
-                int y = curr[1] + d[1];
-                    
-                if (x >= 0 && y >= 0 && x < rooms.size() && y < rooms[0].size() && rooms[x][y] == INT_MAX) {
-                    rooms[x][y] = rooms[curr[0]][curr[1]] + 1;
-                    q.push({x, y});
-                }
+        while(!canReach.empty()){
+            int r = canReach.front().first, c = canReach.front().second;
+            canReach.pop();
+            for (auto dir : dirs) {
+                int x = r + dir.first,  y = c + dir.second;
+                // if x y out of range or it is obstasle, or has small distance aready
+                if (x < 0 || y < 0 || x >= row || y >= col || rooms[x][y] <= rooms[r][c]+1) continue;
+                rooms[x][y] = rooms[r][c] + 1;
+                canReach.emplace(x, y);
             }
         }
     }
