@@ -6,6 +6,6 @@ public:
             if (i > maxInd) return false;
             maxInd = max(maxInd, nums[i] + i);
         }
-        return maxInd >= nums.size() - 1;
+        return true;
     }
 };
