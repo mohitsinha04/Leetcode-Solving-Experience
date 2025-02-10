@@ -19,7 +19,7 @@ public:
     }
     
     double findMedian() {
-        return maxHeap.size() > minHeap.size() ? maxHeap.top() : ((double) maxHeap.top() + minHeap.top()) * 0.5;
+        return (maxHeap.size() + minHeap.size()) % 2 == 1 ? maxHeap.top() : ((double) maxHeap.top() + minHeap.top()) * 0.5;
     }
 };
 
