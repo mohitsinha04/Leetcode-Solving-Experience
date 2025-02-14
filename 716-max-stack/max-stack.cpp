@@ -7,12 +7,13 @@ public:
         count = 0;
     }
     
+    // logn
     void push(int x) {
         stack.insert({count, x});
         values.insert({x, count});
         count++;
     }
-    
+    // o(1) + o(logn)
     int pop() {
         auto p = *stack.rbegin();
         stack.erase(p);
@@ -20,14 +21,17 @@ public:
         return p.second;
     }
     
+    // o(1)
     int top() {
         return stack.rbegin()->second;
     }
     
+    // o(1)
     int peekMax() {
         return values.rbegin()->first;
     }
     
+    // o(1) + o(logn)
     int popMax() {
         auto p = *values.rbegin();
         values.erase(p);
