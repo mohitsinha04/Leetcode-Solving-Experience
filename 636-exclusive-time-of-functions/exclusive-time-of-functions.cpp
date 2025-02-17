@@ -1,5 +1,6 @@
 class Solution {
 public:
+// https://leetcode.com/problems/exclusive-time-of-functions/solutions/1024327/c-o-number-of-log-lines-stack-solution-with-diagram
     struct Log {
         int id;
         bool isStart;
