@@ -1,3 +1,4 @@
+// frequency Node
 class Node {
 public:
     int freq;
@@ -25,7 +26,7 @@ public:
 
     // Inserts a new key <Key> with value 1. Or increments an existing key by 1.
     void inc(string key) {
-        if (map.find(key) != map.end()) {
+        if (map.count(key)) {
             Node* node = map[key];
             int freq = node->freq;
             node->keys.erase(key);  // Remove key from current node
@@ -72,7 +73,7 @@ public:
     // Decrements an existing key by 1. If Key's value is 1, remove it from the
     // data structure.
     void dec(string key) {
-        if (map.find(key) == map.end()) {
+        if (!map.count(key)) {
             return;  // Key does not exist
         }
 
@@ -122,9 +123,7 @@ public:
         if (head->next == tail) {
             return "";  // No keys exist
         }
-        return *(
-            head->next->keys
-                .begin());  // Return one of the keys from the head's next node
+        return *(head->next->keys.begin());  // Return one of the keys from the head's next node
     }
 
 private:
