@@ -35,6 +35,7 @@ public:
         vis.insert({row, col});
         robot.clean();
 
+        // going clockwise : 0: 'up', 1: 'right', 2: 'down', 3: 'left'
         for (int i = 0; i < 4; i++) {
             int newD = (d + i) % 4;
             int newRow = row + dir[newD][0];
