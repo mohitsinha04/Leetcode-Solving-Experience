@@ -24,7 +24,7 @@ public:
                 q.pop();
                 
                 for (auto neighbor : graph[temp]) {
-                    if (!color[neighbor]){
+                    if (color[neighbor] == 0){
                         color[neighbor] = -color[temp];
                         q.push(neighbor);
                     }
