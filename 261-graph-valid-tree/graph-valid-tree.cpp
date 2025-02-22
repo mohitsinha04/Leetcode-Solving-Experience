@@ -1,36 +1,46 @@
 class Solution {
 public:
-    bool validTree(int n, vector<vector<int>>& edges) {
-        unordered_map<int, vector<int>> graph;
-        vector<int> inDegree(n, 0);
-        for (auto edge : edges) {
-            graph[edge[0]].push_back(edge[1]);
-            graph[edge[1]].push_back(edge[0]);
-            inDegree[edge[0]]++;
-            inDegree[edge[1]]++;
+
+    int find(int r, vector<int>& parent) {
+        int p = parent[r];
+        if (r != parent[r]) {
+            parent[r] = find(parent[r], parent);
         }
-        queue<int> q;
-        for (int i = 0; i < n; i++) {
-            if (inDegree[i] == 1) {
-                q.push(i);
+        return parent[r];
+    }
+
+    bool unionEdges(int source, int dest, vector<int>& parent, vector<int>& size) {
+        int p1 = find(source, parent);
+        int p2 = find(dest, parent);
+
+        if (p1 == p2) {
+            return false;
+        } else {
+            if (size[p1] > size[p2]) {
+                size[p1] += size[p2];
+                parent[p2] = p1;
+            } else {
+                size[p2] += size[p1];
+                parent[p1] = p2;
             }
+            return true;
+        }
+    }
+
+    bool validTree(int n, vector<vector<int>>& edges) {
+        if (edges.size() != n - 1) return false;
+        vector<int> parent(n), size(n);
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+            size[i] = 1;
         }
 
-        while (!q.empty()) {
-            int size = q.size();
-            for (int i = 0; i < size; i++) {
-                int curr = q.front();
-                q.pop();
-                for (int adj : graph[curr]) {
-                    if (--inDegree[adj] == 1) {
-                        q.push(adj);
-                    }
-                }
-            }
+        for (auto edge : edges) {
+            int a = edge[0];
+            int b = edge[1];
+            if (!unionEdges(a, b, parent, size)) return false;
         }
-        for (int i = 0; i < n; i++) {
-            if (inDegree[i] > 1) return false;
-        }
-        return edges.size() == n-1;
+
+        return true;
     }
 };
