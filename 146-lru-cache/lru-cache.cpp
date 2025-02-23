@@ -20,7 +20,7 @@ public:
     }
     
     int get(int key) {
-        if (dic.find(key) == dic.end()) {
+        if (!dic.count(key)) {
             return -1;
         }
 
@@ -31,7 +31,7 @@ public:
     }
     
     void put(int key, int value) {
-        if (dic.find(key) != dic.end()) {
+        if (dic.count(key)) {
             Node *oldNode = dic[key];
             remove(oldNode);
         }
