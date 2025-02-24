@@ -14,12 +14,6 @@ public:
         }
     }
 
-    // int search(int left, int right, int p) {
-    //     int mid = (right + left) /2;
-    //     if (cumSum[mid] < p) return search(mid + 1, right, p);
-    //     else if (mid == left) return mid;
-    //     return search(left, mid, p);
-    // }
     int search(int left, int right, int p) {
         while (left < right) {
             int mid = (right + left) / 2;
