@@ -1,59 +1,22 @@
 class MyCalendar {
-    std::vector<std::pair<int, int>> list;
-
+    map<int, int> intervals; // Stores intervals with start as key and end as value
 public:
-    MyCalendar() {
-        list = {};
-    }
+    MyCalendar() {}
 
     bool book(int start, int end) {
-        if (list.empty()) {
-            list.emplace_back(start, end);
-            return true;
+        auto next = intervals.lower_bound(start); // Find next interval
+        if (next != intervals.end() && next->first < end) {
+            return false; // Overlaps with next interval
         }
-
-        int left = searchRight(start);
-        int right = searchLeft(end);
-
-        if (left == right) {
-            list.insert(list.begin() + right, {start, end});
-            return true;
+        if (next != intervals.begin() && prev(next)->second > start) {
+            return false; // Overlaps with previous interval
         }
-        return false;
-    }
-
-private:
-    int searchRight(int start) {
-        int lo = 0, hi = list.size() - 1;
-
-        while (lo <= hi) {
-            int mid = (lo + hi) / 2;
-            if (list[mid].second <= start) {
-                lo = mid + 1;
-            } else {
-                hi = mid - 1;
-            }
-        }
-        return lo;
-    }
-
-    int searchLeft(int end) {
-        int lo = 0, hi = list.size() - 1;
-
-        while (lo <= hi) {
-            int mid = (lo + hi) / 2;
-            if (list[mid].first < end) {
-                lo = mid + 1;
-            } else {
-                hi = mid - 1;
-            }
-        }
-        return lo;
+        intervals[start] = end; // No overlap, add interval
+        return true;
     }
 };
-
 /**
  * Your MyCalendar object will be instantiated and called as such:
  * MyCalendar* obj = new MyCalendar();
- * bool param_1 = obj->book(startTime,endTime);
+ * bool param_1 = obj->book(start,end);
  */
