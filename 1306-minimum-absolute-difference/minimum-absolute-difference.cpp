@@ -1,32 +1,32 @@
 class Solution {
 public:
     vector<vector<int>> minimumAbsDifference(vector<int>& arr) {
-        // Sort the original array
-        sort(arr.begin(), arr.end());
-        vector<vector<int>> answer;
-
-        // Initialize minimum difference `minPairDiff` as a huge integer in order not 
-        // to miss the absolute difference of the first pair. 
-        int minPairDiff = INT_MAX;
-
-        // Traverse the sorted array
-        for (int i = 0; i < arr.size() - 1; ++i) {            
-            // For the absolute value `currPairDiff` of the current pair:
-            int currPairDiff = arr[i + 1] - arr[i];
-
-            // If `currPairDiff` equals `minPairDiff`, add this pair to the answer list.
-            // If `currPairDiff` is smaller than `minPairDiff`, discard all pairs in the answer list, 
-            // add this pair to the answer list and update `minPairDiff`.
-            // If `currPairDiff` is larger than `minPairDiff`, we just go ahead.
-            if (currPairDiff == minPairDiff) {
-                answer.push_back({arr[i], arr[i + 1]});           
-            } else if (currPairDiff < minPairDiff) {
-                answer = {};
-                answer.push_back({arr[i], arr[i + 1]});
-                minPairDiff = currPairDiff;
-            }
+        int minElement = *min_element(arr.begin(), arr.end());
+        int maxElement = *max_element(arr.begin(), arr.end());
+        int shift = -minElement;
+        vector<uint8_t> line(maxElement - minElement + 1);
+        vector<vector<int>> res;
+        
+        // For each integer `num` in `arr`, we increment line[num + shift] by 1.
+        for (const int& num : arr) {
+            line[num + shift] = 1;
         }
 
-        return answer;
+        int minPairDiff = maxElement - minElement;
+        int prev = 0;
+
+        for (int i = 1; i <= maxElement + shift; i++) {
+            if (line[i] == 0) continue;
+
+            if (i - prev == minPairDiff) {
+                res.push_back({prev - shift, i - shift});
+            } else if (i - prev < minPairDiff) {
+                minPairDiff = i - prev;
+                res = {{prev - shift, i - shift}};
+            }
+            prev = i;
+        }
+        return res;
+
     }
 };
