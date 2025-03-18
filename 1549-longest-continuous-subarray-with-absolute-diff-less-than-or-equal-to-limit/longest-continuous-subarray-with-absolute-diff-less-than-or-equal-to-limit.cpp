@@ -2,10 +2,10 @@ class Solution {
 public:
     int longestSubarray(vector<int>& nums, int limit) {
         deque<int> maxDeque, minDeque;
-        int left = 0, right;
+        int left = 0;
         int maxLength = 0;
 
-        for (right = 0; right < nums.size(); ++right) {
+        for (int right = 0; right < nums.size(); ++right) {
             // Maintain the maxDeque in decreasing order
             while (!maxDeque.empty() && maxDeque.back() < nums[right]) {
                 maxDeque.pop_back();
