@@ -10,18 +10,20 @@ public:
 
 class Solution {
 public:
-    unordered_map<int, Employee*> emap;
     int getImportance(vector<Employee*> employees, int id) {
-        for(auto& emp : employees){
-            emap[emp->id] = emp;
+        int result = 0;
+        unordered_map<int, Employee*> emap;
+        for(auto& employee : employees){
+            emap[employee->id] = employee;
         }
-        return dfs(id);
-    }
-    int dfs(int id){
-        Employee* emp = emap[id];
-        int result = emp->importance;
-        for(auto& s : emp->subordinates){
-            result += dfs(s);
+        queue<Employee*> q;
+        q.push(emap[id]);
+        while (!q.empty()) {
+            Employee* emp = q.front();  q.pop();
+            result += emp->importance;
+            for (int s : emp->subordinates) {
+                q.push(emap[s]);
+            }
         }
         return result;
     }
