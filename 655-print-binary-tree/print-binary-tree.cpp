@@ -11,29 +11,24 @@
  */
 class Solution {
 public:
-    int get_height(TreeNode* p) {
-        if (!p) return 0;
-        int left = get_height(p->left), right = get_height(p->right);
-        return max(left, right)+1;
-    }
-    // width is the max(left, right)*2+1
-    int get_width(TreeNode* p) {
-        if (!p) return 0;
-        int left = get_width(p->left), right = get_width(p->right);
-        return max(left, right)*2+1;
-    }
-    void helper(vector<vector<string>>& ans, TreeNode* p, int level, int l, int r) {
-        if (!p) return;
-        int mid = l+(r-l)/2;
-        ans[level][mid] = to_string(p->val);
-        helper(ans, p->left, level+1, l, mid-1);
-        helper(ans, p->right, level+1, mid+1, r);
-    }
-
     vector<vector<string>> printTree(TreeNode* root) {
-        int h = get_height(root), w = get_width(root);
-        vector<vector<string>> ans(h, vector<string>(w, ""));
-        helper(ans, root, 0, 0, w-1);
+        int h = height(root);
+        int c = pow(2, h) - 1;
+        vector<vector<string>> ans(h, vector<string>(c));
+        dfs(root, 0, c-1, 0, ans);
         return ans;
+    }
+private:
+    int height(TreeNode* root) {
+        if (root == NULL) return 0;
+        return max(height(root->left), height(root->right)) + 1;
+    }
+    void dfs(TreeNode* root, int l, int r, int h, vector<vector<string>>& ans) {
+        if (root == NULL) return;
+        if (l > r) return;
+        int mid = (l + r) / 2;
+        ans[h][mid] = to_string(root->val);
+        dfs(root->left, l, mid-1, h+1, ans);
+        dfs(root->right, mid+1, r, h+1, ans);
     }
 };
