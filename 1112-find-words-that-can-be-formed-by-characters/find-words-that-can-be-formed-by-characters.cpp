@@ -15,7 +15,7 @@ public:
             
             bool good = true;
             for (auto& [c, freq] : wordCount) {
-                if (counts[c] < freq) {
+                if (!counts.count(c) || counts[c] < freq) {
                     good = false;
                     break;
                 }
