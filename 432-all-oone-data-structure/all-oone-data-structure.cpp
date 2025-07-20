@@ -1,139 +1,111 @@
-// frequency Node
-class Node {
+class Entry {
 public:
-    int freq;
-    Node* prev;
-    Node* next;
-    unordered_set<string> keys;
-
-    Node(int freq) : freq(freq), prev(nullptr), next(nullptr) {}
+    int cnt;
+    unordered_set <string> keys;
+    Entry(int _cnt, string &key) {
+        cnt = _cnt;
+        keys.insert(key);
+    }
+    void add(string &key) {
+        keys.insert(key);
+    }
+    void remove(string &key) {
+        keys.erase(key); 
+    }
+    bool empty() {
+        return keys.empty(); 
+    }
+    string getAnyKey() {
+        return *(keys.begin()); 
+    }
 };
 
 class AllOne {
-private:
-    Node* head;                        // Dummy head
-    Node* tail;                        // Dummy tail
-    unordered_map<string, Node*> map;  // Mapping from key to its node
-
 public:
-    // Initialize your data structure here.
+    
+    list <Entry> data;
+    unordered_map <string, list<Entry>::iterator> pos;
+    
     AllOne() {
-        head = new Node(0);  // Create dummy head
-        tail = new Node(0);  // Create dummy tail
-        head->next = tail;   // Link dummy head to dummy tail
-        tail->prev = head;   // Link dummy tail to dummy head
+        
     }
-
-    // Inserts a new key <Key> with value 1. Or increments an existing key by 1.
+    
     void inc(string key) {
-        if (map.count(key)) {
-            Node* node = map[key];
-            int freq = node->freq;
-            node->keys.erase(key);  // Remove key from current node
-
-            Node* nextNode = node->next;
-            if (nextNode == tail || nextNode->freq != freq + 1) {
-                // Create a new node if next node does not exist or freq is not
-                // freq + 1
-                Node* newNode = new Node(freq + 1);
-                newNode->keys.insert(key);
-                newNode->prev = node;
-                newNode->next = nextNode;
-                node->next = newNode;
-                nextNode->prev = newNode;
-                map[key] = newNode;
-            } else {
-                // Increment the existing next node
-                nextNode->keys.insert(key);
-                map[key] = nextNode;
+        
+        if (data.empty()) {
+            data.push_back(Entry(1, key));
+            pos[key] = data.begin(); 
+            return;
+        }
+        
+        if (pos.find(key) == pos.end()) {
+            if (data.begin()->cnt == 1) {
+                data.begin()->add(key);
+                pos[key] = data.begin(); 
             }
-
-            // Remove the current node if it has no keys left
-            if (node->keys.empty()) {
-                removeNode(node);
-            }
-        } else {  // Key does not exist
-            Node* firstNode = head->next;
-            if (firstNode == tail || firstNode->freq > 1) {
-                // Create a new node
-                Node* newNode = new Node(1);
-                newNode->keys.insert(key);
-                newNode->prev = head;
-                newNode->next = firstNode;
-                head->next = newNode;
-                firstNode->prev = newNode;
-                map[key] = newNode;
-            } else {
-                firstNode->keys.insert(key);
-                map[key] = firstNode;
+            else {
+                pos[key] = data.insert(data.begin(), Entry(1, key)); 
             }
         }
+        else {
+            auto entry = pos[key]; 
+            if (entry == prev(data.end())) {
+                pos[key] = data.insert(data.end(), Entry(entry->cnt+1, key)); 
+            }
+            else if (entry->cnt+1 == next(entry)->cnt) {
+                next(entry)->add(key);
+                pos[key] = next(entry); 
+            }
+            else {
+                pos[key] = data.insert(next(entry), Entry(entry->cnt+1, key)); 
+            }
+            entry->remove(key);
+            if (entry->empty()) data.erase(entry); 
+        }
+        
     }
-
-    // Decrements an existing key by 1. If Key's value is 1, remove it from the
-    // data structure.
+    
     void dec(string key) {
-        if (!map.count(key)) {
-            return;  // Key does not exist
-        }
-
-        Node* node = map[key];
-        node->keys.erase(key);
-        int freq = node->freq;
-
-        if (freq == 1) {
-            // Remove the key from the map if freq is 1
-            map.erase(key);
-        } else {
-            Node* prevNode = node->prev;
-            if (prevNode == head || prevNode->freq != freq - 1) {
-                // Create a new node if the previous node does not exist or freq
-                // is not freq - 1
-                Node* newNode = new Node(freq - 1);
-                newNode->keys.insert(key);
-                newNode->prev = prevNode;
-                newNode->next = node;
-                prevNode->next = newNode;
-                node->prev = newNode;
-                map[key] = newNode;
-            } else {
-                // Decrement the existing previous node
-                prevNode->keys.insert(key);
-                map[key] = prevNode;
+        auto entry = pos[key]; 
+        if (entry->cnt > 1) {
+            if (entry == data.begin()) {
+                pos[key] = data.insert(data.begin(), Entry(entry->cnt-1, key)); 
+            }
+            else if (entry->cnt-1 == prev(entry)->cnt) {
+                prev(entry)->add(key);
+                pos[key] = prev(entry); 
+            }
+            else {
+                pos[key] = data.insert(entry, Entry(entry->cnt-1, key)); 
             }
         }
-
-        // Remove the node if it has no keys left
-        if (node->keys.empty()) {
-            removeNode(node);
-        }
+        else pos.erase(key); 
+        
+        entry->remove(key);
+        if (entry->empty()) data.erase(entry); 
+        
     }
-
-    // Returns one of the keys with maximal value.
+    
     string getMaxKey() {
-        if (tail->prev == head) {
-            return "";  // No keys exist
-        }
-        return *(tail->prev->keys.begin());  // Return one of the keys from the
-                                             // tail's previous node
+        if (data.empty()) return ""; 
+        return prev(data.end())->getAnyKey(); 
     }
-
-    // Returns one of the keys with minimal value.
+    
     string getMinKey() {
-        if (head->next == tail) {
-            return "";  // No keys exist
-        }
-        return *(head->next->keys.begin());  // Return one of the keys from the head's next node
+        if (data.empty()) return ""; 
+        return data.begin()->getAnyKey(); 
     }
-
-private:
-    void removeNode(Node* node) {
-        Node* prevNode = node->prev;
-        Node* nextNode = node->next;
-
-        prevNode->next = nextNode;  // Link previous node to next node
-        nextNode->prev = prevNode;  // Link next node to previous node
-
-        delete node;  // Free the memory of the removed node
-    }
+    
+     
 };
+
+// https://leetcode.com/problems/all-oone-data-structure/solutions/2687926/c-o-1-list-and-unordered-map
+
+/**
+ * Your AllOne object will be instantiated and called as such:
+ * AllOne* obj = new AllOne();
+ * obj->inc(key);
+ * obj->dec(key);
+ * string param_3 = obj->getMaxKey();
+ * string param_4 = obj->getMinKey();
+ */
