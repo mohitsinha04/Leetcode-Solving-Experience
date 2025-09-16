@@ -1,38 +1,32 @@
 class Solution {
 public:
     int longestSubarray(vector<int>& nums, int limit) {
-        deque<int> maxDeque, minDeque;
-        int left = 0;
-        int maxLength = 0;
+        deque<int> maxpq, minpq;
+        int maxLen = 0;
+        int start = 0;
 
-        for (int right = 0; right < nums.size(); ++right) {
-            // Maintain the maxDeque in decreasing order
-            while (!maxDeque.empty() && maxDeque.back() < nums[right]) {
-                maxDeque.pop_back();
+
+        for (int i = 0; i < nums.size(); i++) {
+            while (!maxpq.empty() && maxpq.back() < nums[i]) {
+                maxpq.pop_back();
             }
-            maxDeque.push_back(nums[right]);
+            
+            maxpq.push_back(nums[i]);
 
-            // Maintain the minDeque in increasing order
-            while (!minDeque.empty() && minDeque.back() > nums[right]) {
-                minDeque.pop_back();
+            while (!minpq.empty() && minpq.back() > nums[i]) {
+                minpq.pop_back();
             }
-            minDeque.push_back(nums[right]);
+            minpq.push_back(nums[i]);
 
-            // Check if the current window exceeds the limit
-            while (maxDeque.front() - minDeque.front() > limit) {
-                // Remove the elements that are out of the current window
-                if (maxDeque.front() == nums[left]) {
-                    maxDeque.pop_front();
-                }
-                if (minDeque.front() == nums[left]) {
-                    minDeque.pop_front();
-                }
-                ++left;
+            while (maxpq.front() - minpq.front() > limit) {
+                if (maxpq.front() == nums[start]) maxpq.pop_front();
+
+                if (minpq.front() == nums[start]) minpq.pop_front();
+
+                start++;
             }
-
-            maxLength = max(maxLength, right - left + 1);
+            maxLen = max(maxLen, i - start + 1);
         }
-
-        return maxLength;
+        return maxLen;
     }
 };
