@@ -1,29 +1,25 @@
 class Solution {
 public:
     int numBusesToDestination(vector<vector<int>>& routes, int source, int target) {
-        
-        if (source == target) {
-            return 0;
-        }
-        
-        unordered_map<int, vector<int>> graph;
-        
+        if (source == target) return 0;
+        unordered_map<int, vector<int>> routeGraph;
+
         for (int i = 0; i < routes.size(); i++) {
-            for (int stop : routes[i]) {
-                graph[stop].push_back(i);
+            for (auto r : routes[i]) {
+                routeGraph[r].push_back(i);
             }
         }
         
-        queue<int> q;
         unordered_set<int> vis;
-        
-        for (int r : graph[source]) {
-            q.push(r);
-            vis.insert(r);
+        queue<int> q;
+
+        for (auto s : routeGraph[source]) {
+            q.push(s);
+            vis.insert(s);
         }
-        
+
         int level = 1;
-        
+
         while (!q.empty()) {
             int size = q.size();
             for (int i = 0; i < size; i++) {
@@ -33,7 +29,7 @@ public:
                 for (int stop : routes[curr]) {
                     if (stop == target) return level;
                     
-                    for (int r : graph[stop]) {
+                    for (int r : routeGraph[stop]) {
                         if (!vis.count(r)) {
                             q.push(r);
                             vis.insert(r);
@@ -44,5 +40,6 @@ public:
             level++;
         }
         return -1;
+
     }
 };
