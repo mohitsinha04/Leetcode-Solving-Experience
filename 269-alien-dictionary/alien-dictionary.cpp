@@ -1,18 +1,19 @@
 class Solution {
 public:
     string alienOrder(vector<string>& words) {
-        unordered_map<char, vector<char>> adjList;
         unordered_map<char, int> indegree;
-        for (string word : words) {
-            for (char c : word) {
+        unordered_map<char, vector<int>> adjMat;
+
+        for (auto word : words) {
+            for (auto c : word) {
                 indegree[c] = 0;
-                adjList[c] = vector<char>();
+                adjMat[c] = {};
             }
         }
 
         for (int i = 0; i < words.size() - 1; i++) {
             string word1 = words[i];
-            string word2 = words[i + 1];
+            string word2 = words[i+1];
 
             if (word1.size() > word2.size() && word1.substr(0, word2.size()) == word2) {
                 return "";
@@ -20,35 +21,33 @@ public:
 
             for (int j = 0; j < min(word1.size(), word2.size()); j++) {
                 if (word1[j] != word2[j]) {
-                    adjList[word1[j]].push_back(word2[j]);
+                    adjMat[word1[j]].push_back(word2[j]);
                     indegree[word2[j]]++;
                     break;
                 }
             }
         }
-
-        string res = "";
         queue<char> q;
-        for (auto item : indegree) {
-            if (item.second == 0) q.push(item.first);
+        for (auto in : indegree) {
+            if (in.second == 0) {
+                q.push(in.first);
+            }
         }
-
+        string res = "";
         while (!q.empty()) {
-            char curr = q.front();
+            auto curr = q.front();
             q.pop();
             res += curr;
-            for (char next : adjList[curr]) {
-                indegree[next]--;
-                if (indegree[next] == 0) {
-                    q.push(next);
+
+            for (auto neighbour : adjMat[curr]) {
+                if (--indegree[neighbour] == 0) {
+                    q.push(neighbour);
                 }
             }
         }
-
-        if (res.size() < indegree.size()) {
-            return "";
+        for (auto in : indegree) {
+            if (in.second != 0) return "";
         }
         return res;
-
     }
 };
