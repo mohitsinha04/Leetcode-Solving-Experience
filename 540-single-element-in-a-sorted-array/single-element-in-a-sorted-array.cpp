@@ -21,3 +21,12 @@ public:
         return -1;
     }
 };
+
+// 0, 1] 2, 3], 4, 5] 6, 7]
+
+// 1, 1, 2, 3, 3, 4, 4, 8, 8
+// 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+
+
+// mid = 8 + 0 / 2 = 4 = even? : if even, then curr == curr + 1 ? left = mid + 1 : right = mid - 1;
+//                               if odd, then curr == curr - 1 ? left = mid + 1 : right = mid - 1 
