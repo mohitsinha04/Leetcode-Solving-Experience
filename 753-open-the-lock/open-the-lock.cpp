@@ -1,31 +1,38 @@
 class Solution {
 public:
     int openLock(vector<string>& deadends, string target) {
-        unordered_set<string> deadSet(deadends.begin(), deadends.end());
-        if (deadSet.count("0000")) return -1;
-        queue<string> q({"0000"});
-        for (int steps = 0; !q.empty(); ++steps) {
-            for (int i = q.size(); i > 0; --i) {
-                auto curr = q.front(); q.pop();
-                if (curr == target) return steps;
-                for (auto nei : neighbors(curr)) {
-                    if (deadSet.count(nei)) continue;
-                    deadSet.insert(nei); // Marked as visited
-                    q.push(nei);
-                }
+        // unordered_set<string> deads(deadends.begin(), deadends.end());
+        unordered_set<string> visited(deadends.begin(), deadends.end());
+        //visited.insert("0000");
+        
+        queue<string> q;
+        q.push("0000");
+        int ans = -1;
+        
+        while(!q.empty()){
+            ans += 1;
+            auto size = q.size();
+            for(auto i = 0; i < size; ++i){
+                string s = q.front();
+                q.pop();
+                if(s == target)
+                    return ans;
+                if(visited.count(s))
+                    continue;
+                visited.insert(s);
+                findnext(s, q);
             }
         }
         return -1;
     }
-    vector<string> neighbors(const string& code) {
-        vector<string> result;
-        for (int i = 0; i < 4; i++) {
-            for (int diff = -1; diff <= 1; diff += 2) {
-                string nei = code;
-                nei[i] = (nei[i] - '0' + diff + 10) % 10 + '0';
-                result.push_back(nei);
-            }
+    void findnext(string s, queue<string>& q){
+        for(int i = 0; i < 4; ++i){
+            char c = s[i];
+            s[i] = (c-'0'+1) % 10 + '0';
+            q.push(s);
+            s[i] = (c-'0'-1 + 10) % 10 + '0';
+            q.push(s);
+            s[i] = c;
         }
-        return result;
     }
 };
