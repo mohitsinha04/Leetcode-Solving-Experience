@@ -18,20 +18,28 @@ class Solution {
 public:
     ListNode *mergeKLists(vector<ListNode *> &lists) { //priority_queue
         priority_queue<ListNode *, vector<ListNode *>, compare> q;
+        // push all current heads.
         for(auto l : lists) {
-            if(l)  q.push(l);
+            if(l != nullptr)  {
+                q.push(l);
+            }
         }
+
         if(q.empty())  return NULL;
 
         ListNode* result = q.top();
         q.pop();
+
+
         if(result->next) q.push(result->next);
-        ListNode* tail = result;            
+
+        ListNode* curr = result;
+
         while(!q.empty()) {
-            tail->next = q.top();
+            curr->next = q.top();
             q.pop();
-            tail = tail->next;
-            if(tail->next) q.push(tail->next);
+            curr = curr->next;
+            if(curr->next) q.push(curr->next);
         }
         return result;
     }
