@@ -1,34 +1,65 @@
 class Solution {
 public:
     int calculate(string s) {
-        stack<int> stk;
-        int sum = 0, sign = 1;
-        
-        for(int i = 0; i < s.size(); i++) {
-            if(s[i] >= '0' && s[i] <= '9') {
-                int curr = 0;
-                while(i < s.size() && s[i] >= '0' && s[i] <= '9'){
-                    curr = curr*10 + (s[i] - '0');
-                    i++;
-                }
-                sum += curr * sign;
-                i--;
-            } else if(s[i] == '+')
-                sign = 1;
-            else if(s[i] == '-') 
-                sign = -1;
-            else if(s[i] == '(') {
-                stk.push(sum);
-                stk.push(sign);
-                sum = 0;
-                sign = 1;
-            } else if(s[i] == ')') {
-                sum = stk.top() * sum;
-                stk.pop();
-                sum += stk.top();
-                stk.pop();
+        int i = 0;
+        return parseExpressionstack(s, i);
+    }
+    int parseExpression(string& s, int& i) {
+        //this vector is working like stack here!
+        vector<int> nums;
+        char op = '+';
+        while (i < s.size() && op != ')') {
+            if (s[i] == ' ') {
+                i++;
+                continue;
             }
+            long n = s[i] == '(' ? parseExpression(s, ++i) : parseNum(s, i);
+            switch(op) {
+                case '+' : nums.push_back(n); break;
+                case '-' : nums.push_back(-n); break;
+                // case '*' : nums.back() *= n; break;
+                // case '/' : nums.back() /= n; break;
+            }            
+            if (i < s.length())                 
+                op = s[i];
+            i++;
         }
-        return sum;
+        return accumulate(nums.begin(), nums.end(), 0);
+    }
+
+    int parseExpressionstack(string& s, int& i) {
+        //this vector is working like stack here!
+        stack<int> nums;
+        char op = '+';
+        while (i < s.size() && op != ')') {
+            if (s[i] == ' ') {
+                i++;
+                continue;
+            }
+            long n = s[i] == '(' ? parseExpression(s, ++i) : parseNum(s, i);
+            switch(op) {
+                case '+' : nums.push(n); break;
+                case '-' : nums.push(-n); break;
+                // case '*' : nums.back() *= n; break;
+                // case '/' : nums.back() /= n; break;
+            }            
+            if (i < s.length())                 
+                op = s[i];
+            i++;
+        }
+        int res = 0;
+        while (!nums.empty()) {
+            res += nums.top();
+            nums.pop();
+        }
+        return res;
+        // return accumulate(nums.begin(), nums.end(), 0);
+    }
+    
+    long parseNum(string& s, int& i) {           
+        long n = 0;
+        while(i < s.length() && isdigit(s[i]))
+            n = s[i++] - '0' + 10 * n;
+        return n;
     }
 };
