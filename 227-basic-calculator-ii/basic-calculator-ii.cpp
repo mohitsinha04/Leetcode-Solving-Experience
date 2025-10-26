@@ -15,7 +15,7 @@ public:
             }
             // check bracket and number
 
-            long n = parseNum(s, i);
+            long n = s[i] == '(' ? parseExpr(s, ++i) : parseNum(s, i);
             switch(operation) {
                 case '+' : nums.push_back(n); break;
                 case '-' : nums.push_back(-n); break;
