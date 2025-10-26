@@ -1,28 +1,38 @@
 class Solution {
 public:
     int calculate(string s) {
-        if (s.size() == 0) return 0;
-        int curr = 0, last = 0, res = 0;
-        char sign = '+';
+        int i = 0;
+        return parseExpr(s, i);
+    }
+    int parseExpr(string& s, int& i) {
+        //this vector is working like stack here!
+        vector<int> nums;
+        char operation = '+';
+        while (i < s.size() && operation != ')') {
+            if (s[i] == ' ') {
+                i++;
+                continue;
+            }
+            // check bracket and number
 
-        for (int i = 0; i < s.size(); i++) {
-            if (isdigit(s[i])) {
-                curr = (curr * 10) + (s[i] - '0');
-            }
-            if (!isdigit(s[i]) && !iswspace(s[i]) || i == s.size() - 1) {
-                if (sign == '+' || sign == '-') {
-                    res += last;
-                    last = (sign == '+') ? curr : -curr;
-                } else if (sign == '*') {
-                    last = last * curr;
-                } else if (sign == '/') {
-                    last = last / curr;
-                }
-                sign = s[i];
-                curr = 0;
-            }
+            long n = s[i] == '(' ? parseExpr(s, ++i) : parseNum(s, i);
+            switch(operation) {
+                case '+' : nums.push_back(n); break;
+                case '-' : nums.push_back(-n); break;
+                case '*' : nums.back() *= n; break;
+                case '/' : nums.back() /= n; break;
+            }            
+            if (i < s.length())                 
+                operation = s[i];
+            i++;
         }
-        res += last;
-        return res;
+        return accumulate(nums.begin(), nums.end(), 0);
+    }
+    
+    long parseNum(string& s, int& i) {           
+        long n = 0;
+        while(i < s.length() && isdigit(s[i]))
+            n = s[i++] - '0' + 10 * n;
+        return n;
     }
 };
