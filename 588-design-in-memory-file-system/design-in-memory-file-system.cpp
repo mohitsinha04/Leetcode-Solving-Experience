@@ -1,84 +1,79 @@
 class FileSystem {
 private:
-    struct TrieNode {
+    struct Node {
         bool isFile;
         string content;
-        unordered_map<string, TrieNode *> children;
-        TrieNode() : isFile(false) {}
+        unordered_map<string, Node*> children;
+        Node(): isFile(false), content("") {}
     };
+    
+    Node* root;
+    
+    // Split path by '/'
+    vector<string> split(const string &path) {
+        vector<string> parts;
+        string token;
+        for (char c : path) {
+            if (c == '/') {
+                if (!token.empty()) {
+                    parts.push_back(token);
+                    token.clear();
+                }
+            } else token.push_back(c);
+        }
+        if (!token.empty()) parts.push_back(token);
+        return parts;
+    }
 
-    TrieNode *root;
-    
-public:
-    FileSystem() {
-        root = new TrieNode();
-    }
-    
-    vector<string> getStrs(string &path) {
-        vector<string> ans;
-        int i = 1, j = 1;
-        while (j <= path.length()) {
-            if (i != j && (j == path.length() || path[j] == '/')) {
-                ans.push_back(path.substr(i, j - i));
-                i = j + 1;
+    // Traverse tree; create nodes if create=true
+    Node* traverse(const vector<string>& parts, bool create = false) {
+        Node* cur = root;
+        for (auto &p : parts) {
+            if (!cur->children.count(p)) {
+                if (!create) return nullptr;
+                cur->children[p] = new Node();
             }
-            ++j;
+            cur = cur->children[p];
         }
-        return ans;
+        return cur;
     }
-    
+
+public:
+    FileSystem() { root = new Node(); }
+
     vector<string> ls(string path) {
-        vector<string> strs = getStrs(path);
-        TrieNode *curr = root;
-        for (string &str : strs)
-            curr = curr->children[str];
+        if (path == "/" || path.empty()) {
+            vector<string> res;
+            for (auto &kv : root->children) res.push_back(kv.first);
+            sort(res.begin(), res.end());
+            return res;
+        }
+
+        vector<string> parts = split(path);
+        Node* node = traverse(parts, false);
+        if (!node) return {};
         
-        if (curr->isFile)
-            return {strs.back()};
+        if (node->isFile) return { parts.back() };
         
-        vector<string> ans;
-        for (auto &p : curr->children)
-            ans.push_back(p.first);
-        sort(ans.begin(), ans.end());
-        return ans;
+        vector<string> res;
+        for (auto &kv : node->children) res.push_back(kv.first);
+        sort(res.begin(), res.end());
+        return res;
     }
-    
+
     void mkdir(string path) {
-        vector<string> strs = getStrs(path);
-        TrieNode *curr = root;
-        for (string &str : strs) {
-            if (!curr->children.count(str))
-                curr->children[str] = new TrieNode();
-            curr = curr->children[str];
-        }
+        if (path == "/" || path.empty()) return;
+        traverse(split(path), true);
     }
-    
+
     void addContentToFile(string filePath, string content) {
-        vector<string> strs = getStrs(filePath);
-        TrieNode *curr = root;
-        for (string &str : strs) {
-            if (!curr->children.count(str))
-                curr->children[str] = new TrieNode();
-            curr = curr->children[str];
-        }
-        curr->isFile = true;
-        curr->content += content;
+        Node* node = traverse(split(filePath), true);
+        node->isFile = true;
+        node->content += content;
     }
-    
+
     string readContentFromFile(string filePath) {
-        vector<string> strs = getStrs(filePath);
-        TrieNode *curr = root;
-        for (string &str : strs)
-            curr = curr->children[str];
-        return curr->content;
+        Node* node = traverse(split(filePath), false);
+        return (node && node->isFile) ? node->content : "";
     }
 };
-
-/**
- * Your FileSystem object will be instantiated and called as such:
- * FileSystem* obj = new FileSystem();
- * vector<string> param_1 = obj->ls(path);
- * obj->mkdir(path);
- * obj->addContentToFile(filePath,content);
- * string param_4 = obj->readContentFromFile(filePath);
- */
