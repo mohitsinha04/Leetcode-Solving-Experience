@@ -12,14 +12,14 @@ private:
     // Split path by '/'
     vector<string> split(const string &path) {
         vector<string> parts;
-        string token;
+        string token = "";
         for (char c : path) {
             if (c == '/') {
                 if (!token.empty()) {
                     parts.push_back(token);
-                    token.clear();
+                    token = "";
                 }
-            } else token.push_back(c);
+            } else token += c;
         }
         if (!token.empty()) parts.push_back(token);
         return parts;
