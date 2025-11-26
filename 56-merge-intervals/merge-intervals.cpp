@@ -3,14 +3,23 @@ public:
     vector<vector<int>> merge(vector<vector<int>>& intervals) {
         sort(intervals.begin(), intervals.end());
 
+        int start = intervals[0][0];
+        int end = intervals[0][1];
         vector<vector<int>> res;
-        for (auto interval : intervals) {
-            if (res.empty() || res.back()[1] < interval[0]) {
-                res.push_back(interval);
+        for (int i = 1; i < intervals.size(); i++) {
+            int currStart = intervals[i][0];
+            int currEnd = intervals[i][1];
+
+            if (currStart <= end) {
+                end = max(end, currEnd);
             } else {
-                res.back()[1] = max(res.back()[1], interval[1]);
+                res.push_back({start, end});
+                start = currStart;
+                end = currEnd;
             }
         }
+        res.push_back({start, end});
         return res;
+
     }
 };
