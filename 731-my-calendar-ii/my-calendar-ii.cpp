@@ -1,23 +1,19 @@
 class MyCalendarTwo {
 public:
     map<int, int> line;
-    int maxOverlaping;
     MyCalendarTwo() {
-        maxOverlaping = 3;
+        
     }
     
     bool book(int startTime, int endTime) {
+        int count = 0;
         line[startTime]++;
         line[endTime]--;
-        
-        int overlapCount = 0;
-        for (auto l : line) {
-            overlapCount += l.second;
-            
-            if (overlapCount == maxOverlaping) {
+        for (auto m : line) {
+            count += m.second;
+            if (count >= 3) {
                 line[startTime]--;
                 line[endTime]++;
-                
                 return false;
             }
         }
