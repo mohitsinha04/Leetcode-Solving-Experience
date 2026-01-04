@@ -1,17 +1,28 @@
 class Solution {
 public:
     int numberOfPoints(vector<vector<int>>& nums) {
-        vector<int> nums_map(102, 0);
+        unordered_map<int, int> line;
+        int minCord = INT_MAX;
+        int maxCord = INT_MIN;
+        for (auto num : nums) {
+            line[num[0]]++;
+            line[num[1]+1]--;
+            minCord = min(minCord, num[0]);
+            maxCord = max(maxCord, num[1]);
+        }
+        int count = 0;
+        int res = 0;
 
-        for (auto i : nums) {
-            nums_map[i[0]]++;
-            nums_map[i[1]+1]--;
+        for (int i = minCord; i <= maxCord; i++) {
+            count += line[i];
+            if (count > 0) res++;
         }
-        int total_car = 0, res = 0;
-        for (int i = 1; i < 101; i++) {
-            total_car += nums_map[i];
-            if (total_car > 0) res++;
-        }
+
+        // for (auto m : line) {
+        //     count += m.second;
+        //     if (count > 0)
+        //         res = res + count;
+        // }
         return res;
     }
 };
