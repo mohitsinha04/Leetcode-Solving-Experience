@@ -17,12 +17,6 @@ public:
             count += line[i];
             if (count > 0) res++;
         }
-
-        // for (auto m : line) {
-        //     count += m.second;
-        //     if (count > 0)
-        //         res = res + count;
-        // }
         return res;
     }
 };
