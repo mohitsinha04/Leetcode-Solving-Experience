@@ -14,6 +14,8 @@ public:
             if (count >= 3) {
                 line[startTime]--;
                 line[endTime]++;
+                if (line[startTime] == 0) line.erase(startTime);
+                if (line[endTime] == 0) line.erase(endTime);
                 return false;
             }
         }
