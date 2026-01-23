@@ -1,22 +1,33 @@
 class MyCalendar {
-    map<int, int> intervals; // Stores intervals with start as key and end as value
 public:
-    MyCalendar() {}
+    map<int, int> line;
+    // int max_soFar = INT_MIN;
+    // int min_soFar = INT_MAX;
+    MyCalendar() {
+        
+    }
+    
+    bool book(int startTime, int endTime) {
+        line[startTime]++;
+        line[endTime]--;
 
-    bool book(int start, int end) {
-        auto next = intervals.lower_bound(start); // Find next interval
-        if (next != intervals.end() && next->first < end) {
-            return false; // Overlaps with next interval
+        int count = 0;
+        for (auto m : line) {
+            if (m.first > endTime) break;
+            count += m.second;
+
+            if (count > 1) {
+                line[startTime]--;
+                line[endTime]++;
+                return false;
+            }
         }
-        if (next != intervals.begin() && prev(next)->second > start) {
-            return false; // Overlaps with previous interval
-        }
-        intervals[start] = end; // No overlap, add interval
         return true;
     }
 };
+
 /**
  * Your MyCalendar object will be instantiated and called as such:
  * MyCalendar* obj = new MyCalendar();
- * bool param_1 = obj->book(start,end);
+ * bool param_1 = obj->book(startTime,endTime);
  */
