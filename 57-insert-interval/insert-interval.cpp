@@ -1,25 +1,26 @@
-	class Solution {
+class Solution {
 public:
     vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
-        map<int, int> m;
-        for(auto& p : intervals){
-            ++m[p[0]];
-            --m[p[1]];
+        map<int, int> line;
+
+        for (auto interval : intervals) {
+            line[interval[0]]++;
+            line[interval[1]]--;
         }
-        ++m[newInterval[0]];
-        --m[newInterval[1]];
-        int count = 0;
-        vector<vector<int>> ans;
-        int start;
-        for(auto& i : m){
-            if(count==0){
-                start = i.first;
+        line[newInterval[0]]++;
+        line[newInterval[1]]--;
+
+        int count = 0, start = 0;
+        vector<vector<int>> res;
+        for (auto l : line) {
+            if (count == 0) {
+                start = l.first;
             }
-            count += i.second;
-            if(count == 0){
-                ans.push_back({start, i.first});
+            count += l.second;
+            if (count == 0) {
+                res.push_back({start, l.first});
             }
         }
-        return ans;
+        return res;
     }
 };
