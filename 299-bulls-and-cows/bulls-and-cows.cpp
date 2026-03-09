@@ -7,14 +7,14 @@ public:
             if (secret[i] == guess[i]) {
                 b++;
             } else {
+                if (map[secret[i]] < 0) {
+                    c++;
+                }
+                if (map[guess[i]] > 0) {
+                    c++;
+                }
                 map[secret[i]]++;
-            }
-        }
-        for (int i = 0; i < secret.size(); i++) {
-            if (secret[i] != guess[i] && map[guess[i]]) {
-                c++;
                 map[guess[i]]--;
-                if (map[guess[i]] == 0) map.erase(guess[i]);
             }
         }
 
@@ -22,3 +22,10 @@ public:
         return res;
     }
 };
+
+// 1123
+
+// 0111
+
+// map[1]++ = 1 < 0 ? no 
+// map[1]-- = 0 > 0 
