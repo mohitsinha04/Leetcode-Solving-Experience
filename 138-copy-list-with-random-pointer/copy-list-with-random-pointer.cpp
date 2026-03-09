@@ -16,19 +16,19 @@ public:
 
 class Solution {
 public:
-    unordered_map<Node*, Node*> map;
     Node* copyRandomList(Node* head) {
-        if (!head) return nullptr;
-
-        if (map.count(head)) return map[head];
-
-        Node* node = new Node(head->val, NULL, NULL);
-
-        map[head] = node;
-
-        node->next = copyRandomList(head->next);
-        node->random = copyRandomList(head->random);
-
-        return node;
+        unordered_map<Node*, Node*> map;
+        Node* curr = head;
+        while (curr) {
+            map[curr] = new Node(curr->val);
+            curr = curr->next;
+        }
+        curr = head;
+        while (curr) {
+            map[curr]->next = map[curr->next];
+            map[curr]->random = map[curr->random];
+            curr = curr->next;
+        }
+        return map[head];
     }
 };
