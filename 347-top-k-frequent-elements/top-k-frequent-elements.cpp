@@ -15,8 +15,10 @@ public:
         vector<int> res;
 
         for (int i = nums.size(); i>= 0 && res.size() < k; i--) {
-            if (!bucket[i].empty()) {
-                res.insert(res.end(), bucket[i].begin(), bucket[i].end());
+            int currIndex = 0;
+            while (currIndex < bucket[i].size() && res.size() < k) {
+                res.push_back(bucket[i][currIndex]);
+                currIndex++;
             }
         }
         return res;
