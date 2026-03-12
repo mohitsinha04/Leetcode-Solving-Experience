@@ -1,7 +1,7 @@
 class Solution {
 public:
     vector<int> findOriginalArray(vector<int>& changed) {
-        if (changed.size() & 2 != 0) return {};
+        if (changed.size() % 2 != 0) return {};
         sort(changed.begin(), changed.end());
         unordered_map<int, int> map;
 
