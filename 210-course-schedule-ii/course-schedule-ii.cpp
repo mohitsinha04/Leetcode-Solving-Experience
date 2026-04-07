@@ -29,3 +29,28 @@ public:
         return {};
     }
 };
+
+// 1, 0
+
+// you must take 0 before 1;
+
+//         0
+//     1       2
+//         3
+
+
+
+// 1 -> 0;
+// 2 -> 0;
+// 3 -> 1, 2;
+
+// indegree[1]++;
+// indegree[2]++;
+// indegree[3]+= 2;
+
+// graph -> 
+// 0 -> 1, 2;
+// 1 -> 3;
+// 2 -> 3;
+
+// start from root which have the most dependecies, and then at the end process leaf
