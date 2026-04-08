@@ -15,7 +15,7 @@ public:
 
 
     int firstMissingPositive(vector<int>& nums) {
-        int position = 0;
+        // int position = 0;
 
         int i = 0;
         while (i < nums.size()) {
