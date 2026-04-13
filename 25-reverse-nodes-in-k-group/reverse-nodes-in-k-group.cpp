@@ -19,27 +19,27 @@
 class Solution {
 public:
     ListNode* reverseLinkedList(ListNode* head, int k) {
-        ListNode* new_head = nullptr;
-        ListNode* ptr = head;
+        ListNode* prev = nullptr;
+        ListNode* curr = head;
         while (k > 0) {
-            ListNode* next_node = ptr->next;
-            ptr->next = new_head;
-            new_head = ptr;
-            ptr = next_node;
+            ListNode* next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
             k--;
         }
-        return new_head;
+        return prev;
     }
     ListNode* reverseKGroup(ListNode* head, int k) {
         int count = 0;
-        ListNode* ptr = head;
-        while (count < k && ptr != nullptr) {
-            ptr = ptr->next;
+        ListNode* curr = head;
+        while (count < k && curr != nullptr) {
+            curr = curr->next;
             count++;
         }
         if (count == k) {
-            ListNode* reversedHead = this->reverseLinkedList(head, k);
-            head->next = this->reverseKGroup(ptr, k);
+            ListNode* reversedHead = reverseLinkedList(head, k);
+            head->next = reverseKGroup(curr, k);
             return reversedHead;
         }
         return head;
