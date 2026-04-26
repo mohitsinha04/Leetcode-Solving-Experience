@@ -11,21 +11,27 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode* dummyHead = new ListNode(0);
-        ListNode* curr = dummyHead;
-        int carry = 0;
-        while (l1 != NULL || l2 != NULL || carry != 0) {
-            int x = l1 ? l1->val : 0;
-            int y = l2 ? l2->val : 0;
-            int sum = carry + x + y;
-            carry = sum / 10;
-            curr->next = new ListNode(sum % 10);
-            curr = curr->next;
-            l1 = l1 ? l1->next : nullptr;
-            l2 = l2 ? l2->next : nullptr;
+        return helper(l1, l2, 0);
+    }
+    ListNode* helper(ListNode* l1, ListNode* l2, int remainder) {
+        ListNode* curr = nullptr;
+        if (l1) {
+            curr = l1;
+            remainder += l1->val;
+            l1 = l1->next;
         }
-        ListNode* result = dummyHead->next;
-        delete dummyHead;  // Freeing the memory allocated for dummyHead
-        return result;
+        
+        if (l2) {
+            curr = l2;
+            remainder += l2->val;
+            l2 = l2->next;
+        }
+        if (!curr) curr = new ListNode(0);
+
+        curr->val = remainder % 10;
+        if (l1 || l2 || remainder >= 10) {
+            curr->next = helper(l1, l2, remainder/10);
+        }
+        return curr;
     }
 };
