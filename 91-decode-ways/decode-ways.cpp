@@ -2,16 +2,18 @@ class Solution {
 public:
     int numDecodings(string s) {
         vector<int> dp(s.size() + 1);
-        dp[0] = 1;
-        dp[1] = s[0] == '0' ? 0 : 1;
-        
-        for (int i = 2; i <= s.size(); i++) {
-            int first = s[i-1] - '0';
-            int sec = (s[i-2] - '0')*10 + s[i-1] - '0';
-            
-            if (first >= 1 && first <= 9) dp[i] += dp[i-1];
-            if (sec >= 10 && sec <= 26) dp[i] += dp[i-2];
+        dp[s.size()] = 1;
+        for (int i = s.size() - 1; i >= 0; i--) {
+            if (s[i] == '0') {
+                dp[i] = 0;
+            } else {
+                dp[i] = dp[i + 1];
+                if (i + 1 < s.size() && (s[i] == '1' ||
+                    s[i] == '2' && s[i + 1] < '7')) {
+                    dp[i] += dp[i + 2];
+                }
+            }
         }
-        return dp[s.size()];
+        return dp[0];
     }
 };
