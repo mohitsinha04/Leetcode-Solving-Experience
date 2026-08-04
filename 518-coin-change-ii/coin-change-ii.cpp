@@ -1,17 +1,17 @@
 class Solution {
 public:
     int change(int amount, vector<int>& coins) {
-        vector<int> dp(amount + 1, 0);
-        dp[0] = 1;
-        
-        for (int c : coins) {
-            for (int j = 0; j < amount + 1; j++) {
-                if (j >= c) {
-                    dp[j] += dp[j-c];
-                }
-            }
-        }
-        
-        return dp[amount];
+        vector<vector<int>> dp(coins.size(), vector<int> (amount+1, -1));
+        return helper(amount, coins, 0, dp);
+    }
+
+    int helper(int amount, vector<int>& coins, int index, vector<vector<int>>& dp) {
+        if (amount == 0) return dp[index][amount] = 1;
+        if (amount < 0 || index >= coins.size()) return 0;
+        if (dp[index][amount] != -1) return dp[index][amount];
+        int sum1 = 0;
+        if (amount - coins[index] >= 0) sum1 = helper(amount - coins[index], coins, index, dp);
+        int sum2 = helper(amount, coins, index + 1, dp);
+        return dp[index][amount] = sum1 + sum2;
     }
 };
