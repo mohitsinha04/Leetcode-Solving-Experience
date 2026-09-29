@@ -6,11 +6,12 @@ public:
         for(int i = 1; i < s.size(); i++) {
             if(s[i] == s[i-1]) curr_run++;
             else {
+                res += min(prev_run, curr_run);
                 prev_run = curr_run;
                 curr_run = 1;
             }
-            if(prev_run >= curr_run) res++;
         }
+        res += min(prev_run, curr_run);
         return res;
     }
 };
