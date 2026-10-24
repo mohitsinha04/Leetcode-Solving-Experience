@@ -5,21 +5,20 @@ public:
 
         int start = intervals[0][0];
         int end = intervals[0][1];
-        vector<vector<int>> res;
-        for (int i = 1; i < intervals.size(); i++) {
-            int currStart = intervals[i][0];
-            int currEnd = intervals[i][1];
 
-            if (currStart <= end) {
-                end = max(end, currEnd);
+        vector<vector<int>> res;
+
+        for (int i = 1; i < intervals.size(); i++) {
+            if (end >= intervals[i][0]) {
+                end = max(end, intervals[i][1]);
             } else {
                 res.push_back({start, end});
-                start = currStart;
-                end = currEnd;
+                start = intervals[i][0];
+                end = intervals[i][1];
             }
         }
+
         res.push_back({start, end});
         return res;
-
     }
 };
