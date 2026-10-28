@@ -1,35 +1,55 @@
 class Solution {
 public:
-    int dir[5] = {0, 1, 0, -1, 0};
-    void paint(vector<vector<int>>& A, int i, int j, vector<pair<int, int>> &q) {
-        if (min(i, j) >= 0 && max(i, j) < A.size() && A[i][j] == 1) {
-            A[i][j] = 2;
-            q.push_back({i, j});
-            for (int d = 0; d < 4; ++d)
-                paint(A, i + dir[d], j + dir[d + 1], q);
-        }
-    }
-    int shortestBridge(vector<vector<int>>& A) {
-        vector<pair<int, int>> q;
-        for (int i = 0; q.size() == 0 && i < A.size(); ++i)
-            for (int j = 0; q.size() == 0 && j < A[0].size(); ++j)
-                paint(A, i, j, q);
-        while (!q.empty()) {
-            vector<pair<int, int>> q1;
-            for (auto [i, j] : q) {
-                for (int d = 0; d < 4; ++d) {
-                    int x = i + dir[d], y = j + dir[d + 1];
-                    if (min(x, y) >= 0 && max(x, y) < A.size()) {
-                        if (A[x][y] == 1)
-                            return A[i][j] - 2;
-                        if (A[x][y] == 0) {
-                            A[x][y] = A[i][j] + 1;
-                            q1.push_back({x, y});
-                        }
-                    }
+    int n;
+    int directions[4][2] = {{-1,0},{1,0},{0,1},{0,-1}};
+    queue<vector<int>> q;
+
+    void dfs(vector<vector<int>>& grid, int r, int c, vector<vector<bool>>& visited) {
+        visited[r][c] = true;
+        for (auto& dir : directions) {
+
+            int nr = r + dir[0], nc = c + dir[1];
+
+            if (nr >= 0 && nr < n && nc >= 0 && nc < n && !visited[nr][nc]) {
+                if (grid[nr][nc] == 0) {
+                    visited[nr][nc] = true;
+                    q.push({nr, nc, 1});
+                    // return;
+                } else {
+                    dfs(grid, nr, nc, visited);
                 }
             }
-            swap(q, q1);
+        }
+    }
+
+    int shortestBridge(vector<vector<int>>& grid) {
+        n = grid.size();
+        vector<vector<bool>> visited(n, vector<bool>(n, false));
+        bool found = false;
+
+        for (int i = 0; i < n && !found; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    dfs(grid, i, j, visited);
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        while (!q.empty()) {
+            auto curr = q.front(); 
+            q.pop();
+            int r = curr[0], c = curr[1], dist = curr[2];
+
+            for (auto& dir : directions) {
+                int nr = r + dir[0], nc = c + dir[1];
+                if (nr >= 0 && nr < n && nc >= 0 && nc < n && !visited[nr][nc]) {
+                    if (grid[nr][nc] == 1) return dist;
+                    visited[nr][nc] = true;
+                    q.push({nr, nc, dist + 1});
+                }
+            }
         }
         return 0;
     }
